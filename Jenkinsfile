@@ -7,6 +7,7 @@ pipeline {
   }
 
   stages {
+
     stage('Clone Repo') {
       steps {
         git credentialsId: 'github-creds',
@@ -25,10 +26,10 @@ pipeline {
       steps {
         withSonarQubeEnv('sonarqube') {
           sh """
-            docker run --rm \
+            docker run --rm --network host \
               -e SONAR_HOST_URL=$SONAR_HOST_URL \
               -e SONAR_LOGIN=$SONAR_AUTH_TOKEN \
-              -v "$PWD:/usr/src" \
+              -v "\$PWD:/usr/src" \
               sonarsource/sonar-scanner-cli:latest \
               -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
               -Dsonar.sources=.
@@ -59,7 +60,7 @@ pipeline {
           docker volume create dependency-check-data >/dev/null 2>&1 || true
 
           docker run --rm \
-            -v "$PWD":/src \
+            -v "\$PWD:/src" \
             -v dependency-check-data:/usr/share/dependency-check/data \
             owasp/dependency-check:latest \
             --scan /src \
@@ -85,3 +86,4 @@ pipeline {
     }
   }
 }
+
