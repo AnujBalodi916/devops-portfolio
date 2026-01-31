@@ -51,27 +51,6 @@ pipeline {
       }
     }
 
-    stage('OWASP Dependency Check (Report Only)') {
-      steps {
-        sh '''
-          set +e
-          rm -rf dependency-check-report || true
-          mkdir -p dependency-check-report
-
-          docker volume create dependency-check-data >/dev/null 2>&1 || true
-
-          docker run --rm \
-            -v "$PWD:/src" \
-            -v dependency-check-data:/usr/share/dependency-check/data \
-            owasp/dependency-check:latest \
-            --scan /src \
-            --format HTML \
-            --out /src/dependency-check-report
-          exit 0
-        '''
-      }
-    }
-
     stage('Deploy Container') {
       steps {
         sh '''
@@ -79,12 +58,6 @@ pipeline {
           docker run -d -p 80:80 --name portfolio portfolio:latest
         '''
       }
-    }
-  }
-
-  post {
-    always {
-      archiveArtifacts artifacts: 'dependency-check-report/**', allowEmptyArchive: true
     }
   }
 }
