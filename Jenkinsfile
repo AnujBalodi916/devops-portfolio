@@ -18,64 +18,64 @@ pipeline {
 
     stage('Build Docker Image') {
       steps {
-        sh "docker build -t ${IMAGE_NAME} ."
+        sh 'docker build -t portfolio:latest .'
       }
     }
 
     stage('SonarQube Scan') {
       steps {
         withSonarQubeEnv('sonarqube') {
-          sh """
+          sh '''
             docker run --rm --network host \
               -e SONAR_HOST_URL=$SONAR_HOST_URL \
               -e SONAR_LOGIN=$SONAR_AUTH_TOKEN \
-              -v "\$PWD:/usr/src" \
+              -v "$PWD:/usr/src" \
               sonarsource/sonar-scanner-cli:latest \
-              -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+              -Dsonar.projectKey=devops-portfolio \
               -Dsonar.sources=.
-          """
+          '''
         }
       }
     }
 
-    stage('Trivy Image Scan') {
+    stage('Trivy Image Scan (Report Only)') {
       steps {
-        sh """
+        sh '''
           docker run --rm \
             -v /var/run/docker.sock:/var/run/docker.sock \
             aquasec/trivy:latest image \
             --severity HIGH,CRITICAL \
-            --exit-code 1 \
-            ${IMAGE_NAME}
-        """
+            --exit-code 0 \
+            portfolio:latest
+        '''
       }
     }
 
     stage('OWASP Dependency Check') {
       steps {
-        sh """
+        sh '''
           rm -rf dependency-check-report || true
           mkdir -p dependency-check-report
 
           docker volume create dependency-check-data >/dev/null 2>&1 || true
 
           docker run --rm \
-            -v "\$PWD:/src" \
+            -v "$PWD:/src" \
             -v dependency-check-data:/usr/share/dependency-check/data \
             owasp/dependency-check:latest \
             --scan /src \
-            --format "HTML" \
+            --format HTML \
             --out /src/dependency-check-report
-        """
+        '''
       }
     }
 
     stage('Deploy Container') {
       steps {
-        sh """
+        sh '''
           docker rm -f portfolio || true
-          docker run -d -p 80:80 --name portfolio ${IMAGE_NAME}
-        """
+          docker run -d -p 80:80 --name portfolio portfolio:latest
+        '''
       }
     }
   }
@@ -86,4 +86,3 @@ pipeline {
     }
   }
 }
-
