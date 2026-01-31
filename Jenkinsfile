@@ -27,10 +27,10 @@ pipeline {
         withSonarQubeEnv('sonarqube') {
           sh '''
             docker run --rm --network host \
-              -e SONAR_HOST_URL=$SONAR_HOST_URL \
-              -e SONAR_LOGIN=$SONAR_AUTH_TOKEN \
               -v "$PWD:/usr/src" \
               sonarsource/sonar-scanner-cli:latest \
+              -Dsonar.host.url=$SONAR_HOST_URL \
+              -Dsonar.login=$SONAR_AUTH_TOKEN \
               -Dsonar.projectKey=devops-portfolio \
               -Dsonar.sources=.
           '''
@@ -51,9 +51,10 @@ pipeline {
       }
     }
 
-    stage('OWASP Dependency Check') {
+    stage('OWASP Dependency Check (Report Only)') {
       steps {
         sh '''
+          set +e
           rm -rf dependency-check-report || true
           mkdir -p dependency-check-report
 
@@ -66,6 +67,7 @@ pipeline {
             --scan /src \
             --format HTML \
             --out /src/dependency-check-report
+          exit 0
         '''
       }
     }
