@@ -32,7 +32,7 @@ pipeline {
       }
     }
 
-    stage('Trivy Image Scan (Report Only)') {
+    stage('Trivy Image Scan (Report + Non-blocking)') {
       steps {
         sh '''
           docker run --rm \
@@ -40,7 +40,7 @@ pipeline {
             aquasec/trivy:latest image \
             --severity HIGH,CRITICAL \
             --exit-code 0 \
-            portfolio:latest
+            portfolio:latest | tee trivy-report.txt
         '''
       }
     }
@@ -54,5 +54,10 @@ pipeline {
       }
     }
   }
-}
 
+  post {
+    always {
+      archiveArtifacts artifacts: 'trivy-report.txt', allowEmptyArchive: true
+    }
+  }
+}
