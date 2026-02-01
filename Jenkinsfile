@@ -8,14 +8,6 @@ pipeline {
 
   stages {
 
-    stage('Clone Repo') {
-      steps {
-        git credentialsId: 'github-creds',
-            url: 'https://github.com/AnujBalodi916/devops-portfolio.git',
-            branch: 'main'
-      }
-    }
-
     stage('Build Docker Image') {
       steps {
         sh 'docker build -t portfolio:latest .'
@@ -63,3 +55,4 @@ pipeline {
     }
   }
 }
+
