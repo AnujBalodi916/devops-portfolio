@@ -23,23 +23,22 @@ pipeline {
     }
 
     stage('SonarQube Scan (Optional)') {
-  steps {
-    withSonarQubeEnv('sonarqube') {
-      sh '''
-        set +e
-        docker run --rm --network host \
-          -v "$PWD:/usr/src" \
-          sonarsource/sonar-scanner-cli:latest \
-          -Dsonar.host.url=$SONAR_HOST_URL \
-          -Dsonar.login=$SONAR_AUTH_TOKEN \
-          -Dsonar.projectKey=devops-portfolio \
-          -Dsonar.sources=.
-        exit 0
-      '''
+      steps {
+        withSonarQubeEnv('sonarqube') {
+          sh '''
+            set +e
+            docker run --rm --network host \
+              -v "$PWD:/usr/src" \
+              sonarsource/sonar-scanner-cli:latest \
+              -Dsonar.host.url=$SONAR_HOST_URL \
+              -Dsonar.login=$SONAR_AUTH_TOKEN \
+              -Dsonar.projectKey=devops-portfolio \
+              -Dsonar.sources=.
+            exit 0
+          '''
+        }
+      }
     }
-  }
-}
-}
 
     stage('Trivy Image Scan (Report Only)') {
       steps {
