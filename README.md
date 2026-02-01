@@ -1,34 +1,61 @@
 # 🚀 DevOps CI/CD Portfolio Project
 
-## 📌 Overview
-This project demonstrates an end-to-end CI/CD pipeline using Jenkins, Docker, and AWS EC2 to deploy a containerized web application with security scanning.
+## 📌 Project Overview
+This project demonstrates a real-world **end-to-end CI/CD pipeline** implemented using **Jenkins, Docker, Trivy, and AWS EC2**.  
+The goal of this project is to eliminate manual deployment, reduce errors, and automate build, security scanning, and deployment processes.
 
-## 🏗️ Architecture
-GitHub → Jenkins → Docker Build → Trivy Scan → Deploy on AWS EC2
+---
 
-## 🛠️ Tools & Technologies
-- Jenkins (CI/CD automation)
-- Docker (Containerization)
-- AWS EC2 (Deployment)
-- GitHub (Source Control)
-- Trivy (Container Security Scanning)
-- Nginx (Web Server)
+## 🏗️ Architecture & Flow
+GitHub → Jenkins → Docker Build → Trivy Security Scan → Deployment on AWS EC2
 
-## 🔄 CI/CD Workflow
-1. Source code is pushed to GitHub
-2. Jenkins pulls the repository
-3. Docker image is built
-4. Trivy scans the image for vulnerabilities
-5. Application is deployed automatically on EC2
+---
 
-## 🔐 Security
-- Container image scanned using Trivy
-- Zero HIGH or CRITICAL vulnerabilities detected
+## 🛠️ Tools & Technologies Used
+- **GitHub** – Source code management
+- **Jenkins** – CI/CD automation
+- **Docker** – Application containerization
+- **Trivy** – Container image vulnerability scanning
+- **AWS EC2** – Application hosting
+- **Nginx** – Web server inside Docker container
 
-## ✅ Outcome
+---
+
+## 🔄 CI/CD Workflow (Step-by-Step)
+1. Developer pushes code to GitHub repository
+2. GitHub webhook automatically triggers Jenkins pipeline
+3. Jenkins pulls the latest source code
+4. Docker builds a container image of the application
+5. Trivy scans the Docker image for security vulnerabilities
+6. If no critical issues are found, the container is deployed on AWS EC2
+7. Application becomes live and accessible via public IP
+
+---
+
+## 🔐 Security Implementation
+- Trivy is used for container image scanning
+- The image is checked for HIGH and CRITICAL vulnerabilities
+- Current scan result: **0 critical vulnerabilities**
+
+---
+
+## ✅ Project Outcome
 - Fully automated CI/CD pipeline
 - Secure containerized deployment
-- Real-world DevOps workflow implementation
+- Real-world DevOps implementation using industry-standard tools
+- No manual intervention required after code push
 
-## 🌐 Live Demo
-Access the deployed application via EC2 public IP.
+---
+
+## 🌐 Live Application
+The application is live and accessible at:
+
+**http://3.110.186.105**
+
+---
+
+## 📌 Key Learning
+- CI/CD automation using Jenkins
+- Docker-based application deployment
+- Security scanning with Trivy
+- Cloud deployment on AWS EC2
